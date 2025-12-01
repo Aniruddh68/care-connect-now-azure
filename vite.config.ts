@@ -18,9 +18,8 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-
-  // 🔥 IMPORTANT: Change Vite output folder from "dist" → "build"
   build: {
-    outDir: "build",
+    outDir: "dist",      // <--- FIXED: Changed "build" to "dist"
+    emptyOutDir: true,   // <--- ADDED: Ensures old files are cleaned up
   },
 }));
