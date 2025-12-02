@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,7 +8,54 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
+
+    <script>
+      // CONFIGURATION
+      // New App URL (Primary)
+      const PRIMARY_URL = "https://red-pebble-04709aa1e.3.azurestaticapps.net"; 
+      
+      // Secondary App URL (Jo aapne pehle banayi thi - Lively Ocean)
+      const SECONDARY_URL = "https://lively-ocean-034f88e10.3.azurestaticapps.net";
+
+      // Check which site we are currently on
+      const currentUrl = window.location.href;
+      const isPrimary = currentUrl.includes("red-pebble");
+
+      async function checkHealth() {
+        console.log("Checking system health...");
+        try {
+          // Health file check karte hain
+          const response = await fetch('/health.json', { cache: "no-store" });
+          
+          if (!response.ok) {
+            throw new Error("Health check failed");
+          }
+          console.log("System Status: Healthy");
+          
+          // Agar hum Secondary par hain aur Primary wapas aa gaya, toh wapas Primary par bhejo
+          if (!isPrimary && response.ok) {
+             console.log("Primary is back online! Switching back...");
+             window.location.href = PRIMARY_URL;
+          }
+
+        } catch (error) {
+          console.error("System Down! Error:", error);
+          
+          // Agar hum Primary par hain aur wo fail ho gaya -> Secondary par bhejo
+          if (isPrimary) {
+            console.warn("Initiating Failover to Secondary...");
+            window.location.href = SECONDARY_URL;
+          }
+        }
+      }
+
+      // Load hote hi check karein
+      checkHealth();
+      
+      // Optional: Har 10 second mein check karein
+      // setInterval(checkHealth, 10000);
+    </script>
+    </head>
   <body>
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
